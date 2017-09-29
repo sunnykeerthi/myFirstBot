@@ -4,8 +4,8 @@ const service = require('./service.js');
 const request = require('request');
 //create a bot
 const connector = new botbuilder.ChatConnector({
-    appId: "036b1dad-41de-4adb-a78a-398bd5e4e901",
-    appPassword: "gBhuDWjDDby65bWG05PSx5k"
+    appId: "bb8316ed-559f-4e00-addf-2ac8d251f03f",
+    appPassword: "wvg9cc89RZWhNLOBwhyJi3R"
 });
 const bot = new botbuilder.UniversalBot(
     connector, [
