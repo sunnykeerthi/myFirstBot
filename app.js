@@ -7,31 +7,30 @@ const connector = new botbuilder.ChatConnector({
     appId: "bb8316ed-559f-4e00-addf-2ac8d251f03f",
     appPassword: "wvg9cc89RZWhNLOBwhyJi3R"
 });
-const bot = new botbuilder.UniversalBot(
-    connector, [
-        (session) => {
-            session.beginDialog('ensureProfile', session.userData.profile);
-        }, (session, result) => {
-            const userDetails = session.userData.profile = result.response;
+const bot = new botbuilder.UniversalBot(connector);
+
+bot.dialog('/', [
+    function (session) {
+        //Get user info
+        session.beginDialog('/ensureProfile', session.userData.profile);
+    },
+    function (session, results) {
+        //We've gotten the user's information and can now give a response based on that data
+        const userDetails = session.userData.profile = results.response;
+
+        service.createIncident(userDetails.shortDesc, userDetails.detailedDesc, function (incidentNo) {
+            if (incidentNo) {
+                session.endConversation(`Hi User, here is a ticket created with number ${incidentNo}`);
+            } else {
+                session.endConversation(`Hi User There is an error`);
+            }
+
+        });
+    }
+]);
 
 
-
-            service.createIncident(userDetails.shortDesc, userDetails.detailedDesc, function (incidentNo) {
-                if (incidentNo) {
-                    session.endConversation(`Hi User, here is a ticket created with number ${incidentNo}`);
-                } else {
-                    session.endConversation(`Hi User There is an error`);
-                }
-
-            });
-
-
-        }
-
-    ]
-);
-
-bot.dialog('ensureProfile', [
+bot.dialog('/ensureProfile', [
     (session, args, next) => {
         session.dialogData.profileDetails = {} || args;
         if (!session.dialogData.profileDetails.typeOfTicket) {
